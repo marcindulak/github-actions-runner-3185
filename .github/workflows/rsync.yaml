@@ -1,0 +1,30 @@
+name: rsync
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands
+        run: echo "::set-output name=matrix::{\"run-number\":[$(echo $(seq 0 19 | sed 's/\(.*\)/"\1"/' | paste -sd, -))]}"
+
+  rsync:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: rsync
+        run: |
+          bash rsync.sh
