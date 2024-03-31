@@ -14,7 +14,7 @@ jobs:
     steps:
       - id: set-matrix
         # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands
-        run: echo "::set-output name=matrix::{\"run-number\":[$(echo $(seq 0 19 | sed 's/\(.*\)/"\1"/' | paste -sd, -))]}"
+        run: echo "::set-output name=matrix::{\"run-number\":[$(echo $(seq 0 9 | sed 's/\(.*\)/"\1"/' | paste -sd, -))]}"
 
   rsync:
     needs: generate-matrix
